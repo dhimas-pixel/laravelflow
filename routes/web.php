@@ -1,27 +1,8 @@
 <?php
 
+use App\Http\Controllers\QuestionController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return inertia('Questions/Index', [
-        'questions' => [
-            [
-                'id' => 1,
-                'title' => 'Question 1',
-            ],
-            [
-                'id' => 2,
-                'title' => 'Question 2',
-            ],
-        ],
-    ]);
-})->name('questions.index');
+Route::get('/', [QuestionController::class, 'index'])->name('questions.index');
 
-Route::get('/questions/{id}', function ($id) {
-    return inertia('Questions/Show', [
-        'question' => [
-            'id' => $id,
-            'title' => 'Question ' . $id,
-        ],
-    ]);
-})->name('questions.show');
+Route::get('/questions/{question:slug}', [QuestionController::class, 'show'])->name('questions.show');
