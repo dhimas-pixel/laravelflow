@@ -13,14 +13,22 @@ class QuestionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $filter = $request->query('filter', 'latest');
+
         $questions = QuestionResource::collection(
-            Question::with(['user'])->latest()->paginate(15)
+            Question::with(['user'])
+                ->when($filter === 'mine', function ($query) {
+                    $query->mine();
+                })
+                ->latest()
+                ->paginate(15)
         );
 
         return inertia('Questions/Index', [
             'questions' => $questions,
+            'filter' => $filter
         ]);
     }
 
@@ -77,6 +85,8 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question)
     {
-        //
+        $question->delete();
+
+        return back()->with('success', 'Your question has been deleted.');
     }
 }

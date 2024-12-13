@@ -32,9 +32,9 @@ const submit = () => {
     form.post(props.action, {
         onSuccess: () => {
             form.reset()
-            emit('success')
-        }
+        },
     })
+    emit('success')
 }
 </script>
 

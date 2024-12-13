@@ -9,7 +9,7 @@
                     <div class="card mt-3">
                         <ul class="list-group list-group-flush">
                             <QuestionSummary v-for="question in questions.data" :key="question.id" :question="question"
-                                @edit="editQuestion" />
+                                @edit="editQuestion" @remove="removeQuestion" />
                         </ul>
                     </div>
 
@@ -21,20 +21,8 @@
                             Question</button>
                     </div>
 
-                    <ul class="nav nav-underline flex-column mt-4">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Latest</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Unanswered</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Scored</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Mine</a>
-                        </li>
-                    </ul>
+                    <QuestionFilter :filter="filter" />
+
                     <h2 class="fs-5 mt-5">Related Tags</h2>
                     <ul class="tags-list mt-3">
                         <li><a href="#" class="tag mb-2">Javascript</a></li>
@@ -67,12 +55,13 @@
 </template>
 
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import { onMounted, reactive, ref } from 'vue';
 import Modal from '../../Components/Modal.vue';
 import Pagination from '../../Components/Pagination.vue';
 import CreateQuestionForm from '../../Components/Question/CreateQuestionForm.vue';
 import EditQuestionForm from '../../Components/Question/EditQuestionForm.vue';
+import QuestionFilter from '../../Components/Question/QuestionFilter.vue';
 import QuestionSummary from '../../Components/Question/QuestionSummary.vue';
 import AppLayout from '../../Layouts/AppLayout.vue';
 
@@ -80,6 +69,9 @@ defineProps({
     questions: {
         type: Object,
         required: true
+    },
+    filter: {
+        type: String,
     }
 })
 
@@ -139,4 +131,13 @@ const resetQuestion = () => {
 
     editing.value = false
 }
+
+const removeQuestion = (payload) => {
+    if (confirm('Are you sure you want to delete this question?')) {
+        router.delete(route('questions.destroy', payload.id), {
+            preserveScroll: true
+        })
+    }
+}
+
 </script>
