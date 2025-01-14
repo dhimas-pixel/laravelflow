@@ -35,4 +35,9 @@ class Question extends Model
 
         $query->whereBelongsTo(auth()->user());
     }
+
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
+    }
 }

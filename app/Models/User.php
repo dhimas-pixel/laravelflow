@@ -57,4 +57,9 @@ class User extends Authenticatable
 
         return 'https://www.gravatar.com/avatar/' . $hash;
     }
+
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
+    }
 }

@@ -38,7 +38,7 @@
                 </div>
             </div>
         </div>
-        <Modal id="question-modal" :title="state.modalTitle" size="lg" scrollable @hidden="resetQuestion">
+        <Modal id="question-modal" :title="modalTitle" size="lg" scrollable @hidden="resetQuestion">
             <component :is="editing ? EditQuestionForm : CreateQuestionForm" :question="question"
                 @success="hideModal" />
         </Modal>
@@ -56,14 +56,16 @@
 
 <script setup>
 import { Head, router } from '@inertiajs/vue3';
-import { onMounted, reactive, ref } from 'vue';
-import Modal from '../../Components/Modal.vue';
+import { reactive, ref } from 'vue';
 import Pagination from '../../Components/Pagination.vue';
 import CreateQuestionForm from '../../Components/Question/CreateQuestionForm.vue';
 import EditQuestionForm from '../../Components/Question/EditQuestionForm.vue';
 import QuestionFilter from '../../Components/Question/QuestionFilter.vue';
 import QuestionSummary from '../../Components/Question/QuestionSummary.vue';
+import useModal from '../../Composables/useModal';
 import AppLayout from '../../Layouts/AppLayout.vue';
+
+const { showModal, hideModal, modalTitle, Modal } = useModal('#question-modal');
 
 defineProps({
     questions: {
@@ -75,10 +77,6 @@ defineProps({
     }
 })
 
-const state = reactive({
-    modalRef: null,
-    modalTitle: 'Ask Question',
-})
 
 const question = reactive({
     title: null,
@@ -88,24 +86,9 @@ const question = reactive({
 
 const editing = ref(false)
 
-onMounted(() => {
-    state.modalRef = new bootstrap.Modal('#question-modal', {
-        backdrop: 'static',
-        keyboard: false
-    })
-})
-
-const showModal = () => {
-    state.modalRef.show()
-}
-
-const hideModal = () => {
-    state.modalRef.hide()
-}
-
 const editQuestion = (payload) => {
     editing.value = true
-    state.modalTitle = `Edit Question`
+    modalTitle.value = `Edit Question`
 
     question.id = payload.id
     question.title = payload.title
@@ -119,7 +102,7 @@ const askQuestion = () => {
     question.body = null
 
     editing.value = false
-    state.modalTitle = 'Ask Question'
+    modalTitle.value = 'Ask Question'
 
     showModal()
 }

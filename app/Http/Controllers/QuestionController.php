@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreQuestionRequest;
+use App\Http\Resources\AnswerResource;
 use App\Http\Resources\QuestionResource;
 use App\Models\Question;
 use Illuminate\Contracts\Cache\Store;
@@ -59,6 +60,9 @@ class QuestionController extends Controller
     {
         return inertia('Questions/Show', [
             'question' => QuestionResource::make($question),
+            'answers' => AnswerResource::collection(
+                $question->answers()->latest()->paginate(5)
+            ),
         ]);
     }
 
