@@ -8,6 +8,7 @@ use App\Http\Resources\QuestionResource;
 use App\Models\Question;
 use Illuminate\Contracts\Cache\Store;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class QuestionController extends Controller
 {
@@ -20,11 +21,19 @@ class QuestionController extends Controller
 
         $questions = QuestionResource::collection(
             Question::with(['user'])
+                ->withCount('answers')
                 ->when($filter === 'mine', function ($query) {
                     $query->mine();
                 })
+                ->when($filter === 'unanswered', function ($query) {
+                    $query->has('answers', '=', 0);
+                })
+                ->when($filter === 'scored', function ($query) {
+                    $query->whereNotNull('best_answer_id');
+                })
                 ->latest()
                 ->paginate(15)
+                ->withQueryString()
         );
 
         return inertia('Questions/Index', [
@@ -79,6 +88,7 @@ class QuestionController extends Controller
      */
     public function update(StoreQuestionRequest $request, Question $question)
     {
+        Gate::authorize('update', $question);
         $question->update($request->validated());
 
         return back()->with('success', 'Your question has been updated.');
@@ -89,6 +99,7 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question)
     {
+        Gate::authorize('delete', $question);
         $question->delete();
 
         return back()->with('success', 'Your question has been deleted.');

@@ -6,6 +6,7 @@ use App\Http\Requests\StoreAnswerRequest;
 use App\Http\Requests\UpdateAnswerRequest;
 use App\Models\Answer;
 use App\Models\Question;
+use Illuminate\Support\Facades\Gate;
 
 class AnswerController extends Controller
 {
@@ -58,9 +59,12 @@ class AnswerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAnswerRequest $request, Answer $answer)
+    public function update(UpdateAnswerRequest $request, Question $question, Answer $answer)
     {
-        //
+        // Gate::authorize('update', $answer);
+        $answer->update($request->validated());
+
+        return back()->with('success', 'Your answer has been updated.');
     }
 
     /**
@@ -68,6 +72,7 @@ class AnswerController extends Controller
      */
     public function destroy(Question $question, Answer $answer)
     {
+        Gate::authorize('delete', $answer);
         $answer->delete();
 
         return back()->with('success', 'Your answer has been deleted.');

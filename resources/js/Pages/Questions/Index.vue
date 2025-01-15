@@ -77,7 +77,6 @@ defineProps({
     }
 })
 
-
 const question = reactive({
     title: null,
     body: null,

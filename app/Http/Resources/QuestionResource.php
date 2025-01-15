@@ -26,6 +26,10 @@ class QuestionResource extends JsonResource
             'user' => UserResource::make($this->user),
             'created_at' => DateTimeResource::make($this->created_at),
             'updated_at' => DateTimeResource::make($this->updated_at),
+            'can_be' => [
+                'updated' => $request->user() && $request->user()->can('update', $this->resource),
+                'deleted' => $request->user() && $request->user()->can('delete', $this->resource),
+            ]
         ];
     }
 }

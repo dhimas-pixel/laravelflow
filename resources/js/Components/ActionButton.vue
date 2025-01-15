@@ -1,11 +1,23 @@
 <script setup>
 const emit = defineEmits(['edit', 'remove'])
+
+defineProps({
+    allowUpdated: {
+        type: Boolean,
+        default: true
+    },
+    allowDeleted: {
+        type: Boolean,
+        default: true
+    },
+})
 </script>
 
 <template>
     <div class="post-action">
         <div class="d-flex gap-1 justify-content-center align-items-center">
-            <button @click="emit('edit')" class="btn btn-sm btn-circle shadow text-white btn-secondary me-1">
+            <button v-if="allowUpdated" @click="emit('edit')"
+                class="btn btn-sm btn-circle shadow text-white btn-secondary me-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-pencil-fill" viewBox="0 0 16 16">
                     <path
@@ -13,7 +25,7 @@ const emit = defineEmits(['edit', 'remove'])
                     </path>
                 </svg>
             </button>
-            <button @click="emit('remove')" class="btn btn-sm btn-circle shadow btn-danger">
+            <button v-if="allowDeleted" @click="emit('remove')" class="btn btn-sm btn-circle shadow btn-danger">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-trash-fill" viewBox="0 0 16 16">
                     <path

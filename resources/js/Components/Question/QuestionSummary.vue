@@ -47,7 +47,7 @@ const emit = defineEmits(['edit', 'remove'])
                             question.created_at.human }}</time></span>
                     </div>
                 </div>
-                <ActionButton v-if="$page.props.user && $page.props.user.id === question.user.id"
+                <ActionButton :allow-updated="question.can_be.updated" :allow-deleted="question.can_be.deleted"
                     @edit="emit('edit', question)" @remove="emit('remove', question)" />
             </div>
         </div>
