@@ -29,7 +29,9 @@ class QuestionResource extends JsonResource
             'can_be' => [
                 'updated' => $request->user() && $request->user()->can('update', $this->resource),
                 'deleted' => $request->user() && $request->user()->can('delete', $this->resource),
-            ]
+            ],
+            'has_accepted_answer' => !!$this->best_answer_id,
+            'is_bookmarked' => $this->bookmarkedBy($request->user()),
         ];
     }
 }
