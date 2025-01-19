@@ -4,6 +4,7 @@ use App\Http\Controllers\AcceptAnswerController;
 use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\BookmarkQuestionController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\VoteAnswerController;
 use App\Http\Controllers\VoteQuestionController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Console\Question\Question;
@@ -23,3 +24,4 @@ Route::post('/questions/{question}/bookmark', [BookmarkQuestionController::class
 Route::delete('/questions/{question}/bookmark', [BookmarkQuestionController::class, 'destroy'])->name('questions.bookmark.destroy')->middleware('auth');
 
 Route::post('/questions/{question}/vote', VoteQuestionController::class)->name('questions.vote')->middleware('auth');
+Route::post('/questions/answers/{answer}/vote', VoteAnswerController::class)->name('questions.answers.vote')->middleware('auth');

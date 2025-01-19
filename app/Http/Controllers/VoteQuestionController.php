@@ -16,6 +16,6 @@ class VoteQuestionController extends Controller
 
         $request->user()->voteQuestion($question, $vote);
 
-        return back()->with('success', 'Your vote has been recorded.');
+        return back()->with('success', 'Your vote for the question has been recorded.');
     }
 }

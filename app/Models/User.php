@@ -73,18 +73,35 @@ class User extends Authenticatable
         return $this->morphedByMany(Question::class, 'votable');
     }
 
+    public function voteAnswers()
+    {
+        return $this->morphedByMany(Answer::class, 'votable');
+    }
+
     public function voteQuestion(Question $question, int $vote)
     {
         $voteQuestions = $this->voteQuestions();
 
-        if ($voteQuestions->where('votable_id', $question->id)->exists()) {
-            $voteQuestions->updateExistingPivot($question, ['vote' => $vote]);
+        $this->vote($voteQuestions, $question, $vote);
+    }
+
+    public function voteAnswer(Answer $answer, int $vote)
+    {
+        $voteAnswers = $this->voteAnswers();
+
+        $this->vote($voteAnswers, $answer, $vote);
+    }
+
+    public function vote($relationship, $model,  $vote)
+    {
+        if ($relationship->where('votable_id', $model->id)->exists()) {
+            $relationship->updateExistingPivot($model, ['vote' => $vote]);
         } else {
-            $voteQuestions->attach($question, ['vote' => $vote]);
+            $relationship->attach($model, ['vote' => $vote]);
         }
 
-        $question->load('votes');
-        $question->votes_count = $question->votes()->sum('vote');
-        $question->save();
+        $model->load('votes');
+        $model->votes_count = $model->votes()->sum('vote');
+        $model->save();
     }
 }
